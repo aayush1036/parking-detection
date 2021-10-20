@@ -49,7 +49,7 @@ def create_data(filepath = SOURCE_PATH,train_path = TRAIN_PATH, test_path = TEST
             X.append(img)
             y.append(CATEGORY_DICT[category])
     X = np.array(X)
-    X /= 255.0
+    X = X/255.0
     y = np.array(y).reshape(-1,1)
     X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=random_state, test_size=test_size, stratify=y)
     train_data = (X_train, y_train)
