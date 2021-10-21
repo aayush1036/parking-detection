@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import os 
 
 #Constants 
+TOTAL_PIXELS = 533*260
 SOURCE_PATH = 'Parking'
 FIGSIZE = (20,10)
 NROWS = 5
@@ -91,3 +92,35 @@ def see_random_data(array, labels,figsize=FIGSIZE,nrows=NROWS, ncols=NCOLS,seed=
             ax[i,j].set_title(INV_CAT_DICT[random_y[i,j]])
     plt.tight_layout()
     plt.show()
+
+def create_prediction(filepath,model):
+    """Creates a prediction for a given image at a filepath
+
+    Args:
+        filepath (str): Path to the file where image is stored
+
+    Returns:
+        np.array: Array containing the prediction of the model
+    """    
+    img = cv2.imread(filepath)
+    img = cv2.resize(img, TARGET_SIZE)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_new = np.expand_dims(img, axis=0)
+    return np.argmax(model.predict(img_new),axis=1)
+
+def create_prediction_pca(filepath,pca,n_components,model_pca):
+    """Creates a prediction from a model after implementing pca
+
+    Args:
+        filepath (str): Path to the file where image is stored
+
+    Returns:
+        np.array: Array containing the predictions for PCA
+    """    
+    img = cv2.imread(filepath)
+    img = cv2.resize(img, TARGET_SIZE)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_arr = img.ravel()
+    img_new = np.expand_dims(img_arr, axis=0)
+    img_tr = pca.transform(img_new)[:,:n_components]
+    return np.argmax(model_pca.predict(img_tr),axis=1)
